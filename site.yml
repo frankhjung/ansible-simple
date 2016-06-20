@@ -1,0 +1,7 @@
+---
+
+- name: test simple module
+  hosts: localhost
+
+  roles:
+    - simple

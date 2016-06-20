@@ -1,0 +1,11 @@
+ansible/
+*.bak
+deleted.files
+.DS_Store
+.htaccess
+*.log
+*.pyc
+*.retry
+.*.swp
+tmp/
+.vault_pass.txt
