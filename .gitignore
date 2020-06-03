@@ -9,3 +9,4 @@ deleted.files
 .*.swp
 tmp/
 .vault_pass.txt
+.vscode/

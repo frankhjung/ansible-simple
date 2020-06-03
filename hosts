@@ -1,2 +1,0 @@
-# ansible simplist of hosts file
-localhost   ansible_connection=local

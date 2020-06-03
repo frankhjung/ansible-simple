@@ -3,7 +3,8 @@
 - block:
 
   - name: test simple ansible module
-    simple_module: name='earth'
+    simple_module:
+      name: earth
     register: result
 
   - debug: var=result
