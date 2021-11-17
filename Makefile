@@ -7,7 +7,7 @@
 PYTHON	:= /usr/bin/python3
 
 SRCS	:= library/*.py
-YAMLS	:= $(wildcard *.yaml roles/**/*.yaml)
+YAMLS	:= $(wildcard *.yaml roles/simple/tasks/main.yaml)
 
 all: check test run doc dist
 
