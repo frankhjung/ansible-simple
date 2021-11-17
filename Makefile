@@ -4,13 +4,10 @@
 
 .PHONY: check clean help
 
-SHELL	:= /bin/sh
-COMMA	:= ,
-EMPTY	:=
-SPACE	:= $(EMPTY) $(EMPTY)
 PYTHON	:= /usr/bin/python3
 
 SRCS	:= library/*.py
+YAMLS	:= $(wildcard *.yaml roles/**/*.yaml)
 
 all: check test run doc dist
 
@@ -25,7 +22,7 @@ help:
 	@echo
 	@echo "Initialise virtual environment (venv) with:"
 	@echo
-	@echo "pip3 install virtualenv; python3 -m virtualenv venv; source venv/bin/activate; pip3 install -r requirements.txt"
+	@echo "pip3 install virtualenv; python3 -m virtualenv venv; source venv/bin/activate; pip3 install -Ur requirements.txt"
 	@echo
 	@echo "Start virtual environment (venv) with:"
 	@echo
@@ -37,10 +34,16 @@ help:
 	@echo
 
 check:
+	# sort imports
+	isort $(SRCS)
 	# format code to googles style
 	yapf --style google --parallel -i $(SRCS)
-	# check with pylint
+	# lint
 	pylint $(SRCS)
+	# check yaml
+	yamllint --strict $(YAMLS)
+	# check ansible
+	ansible-lint site.yaml
 
 exec:
 	ansible-playbook site.yaml
