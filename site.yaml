@@ -1,6 +1,6 @@
 ---
 
-- name: test simple module
+- name: Test simple module
   hosts: localhost
 
   roles:

@@ -1,12 +1,14 @@
 ---
 
-- block:
-
-  - name: test simple ansible module
-    simple_module:
-      name: earth
-    register: result
-
-  - debug: var=result
-
+- name: Simple ansible module
   tags: simple
+  block:
+
+   - name: Test simple ansible module
+     simple_module:
+      name: earth
+     register: result
+
+   - name: Debug result
+     ansible.builtin.debug:
+      var: result
