@@ -17,3 +17,8 @@ jobs:
 
       - name: lint ansible playbooks
         uses: ansible/ansible-lint-action@v6.0.1
+
+      - name: run playbook
+        uses: dawidd6/action-ansible-playbook@v2
+        with:
+          playbook: site.yaml

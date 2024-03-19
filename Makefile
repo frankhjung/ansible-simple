@@ -1,32 +1,35 @@
 #!/usr/bin/env make
 
-.DEFAULT_GOAL := check
+.DEFAULT_GOAL := default
 
-.PHONY: check clean help
+.PHONY: check clean help run
 
-PYTHON	:= /usr/bin/python3
+PYTHON	:= $(shell which python3)
+CTAGS	:= $(shell which ctags)
+LINE_LENGTH	:= 79	# PEP-8 standards ensure styling tools use this too
 
-SRCS	:= library/*.py
+SRCS	:= $(wildcard library/*.py)
 YAMLS	:= $(wildcard *.yaml roles/simple/tasks/main.yaml)
 
-all: check test run doc dist
+default:	check run
+
+all:	default
 
 help:
 	@echo
 	@echo "Default goal: ${.DEFAULT_GOAL}"
-	@echo "  all:   	check cover run test doc dist"
-	@echo "  check: 	check style and lint code"
-	@echo "  clean: 	delete all generated files"
-	@echo "  exec:		run main with example arguments"
-	@echo "  version:	show version"
+	@echo "  all:     check cover run test doc dist"
+	@echo "  check:   check style and lint code"
+	@echo "  run:	  run main with example arguments"
+	@echo "  clean:   delete all generated files"
 	@echo
 	@echo "Initialise virtual environment (venv) with:"
 	@echo
-	@echo "pip3 install virtualenv; python3 -m virtualenv venv; source venv/bin/activate; pip3 install -Ur requirements.txt"
+	@echo "pip3 install virtualenv; python3 -m virtualenv .venv; source .venv/bin/activate; pip3 install -Ur requirements.txt"
 	@echo
-	@echo "Start virtual environment (venv) with:"
+	@echo "Start virtual environment (.venv) with:"
 	@echo
-	@echo "source venv/bin/activate"
+	@echo "source .venv/bin/activate"
 	@echo
 	@echo "Deactivate with:"
 	@echo
@@ -34,18 +37,26 @@ help:
 	@echo
 
 check:
+ifdef CTAGS
+	# ctags for vim
+	ctags --recurse -o tags $(SRCS)
+endif
 	# sort imports
-	isort $(SRCS)
+	isort --line-length $(LINE_LENGTH) --profile black $(SRCS)
 	# format code to googles style
-	yapf --style google --parallel -i $(SRCS)
-	# lint
+	black --quiet --line-length $(LINE_LENGTH) $(SRCS)
+	# sort requirements
+	sort-requirements requirements.txt
+	# check with flake8
+	flake8 $(SRCS)
+	# check with pylint
 	pylint $(SRCS)
 	# check yaml
 	yamllint --strict $(YAMLS)
 	# check ansible
 	ansible-lint site.yaml
 
-exec:
+run:
 	ansible-playbook site.yaml
 
 clean:
