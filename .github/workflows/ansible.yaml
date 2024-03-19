@@ -2,50 +2,18 @@
 
 name: Ansible Simple Module
 
-on:                      # yamllint disable rule:truthy
-  push:
-    branches:
-      - master
-      - 'feature/*'
+on: [push, pull_request]
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
-
     steps:
 
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
+      - name: shallow checkout
+        uses: actions/checkout@v2
         with:
-          python-version: 3.9
+          ref: refs/heads/master
+          fetch-depth: 1
 
-      - name: cache
-        uses: actions/cache@v2
-        with:
-          path: venv
-          key: $GITHUB_REF
-
-      - name: setup
-        run: |
-          python -V
-          python -m pip install --upgrade pip virtualenv
-          python -m virtualenv venv
-          source venv/bin/activate
-          pip install -Ur requirements.txt
-          echo isort $(isort --version-number)
-          pylint --version
-          yamllint --version
-          yapf --version
-
-      - name: check
-        run: |
-          source venv/bin/activate
-          isort --check --diff library/simple_module.py
-          yapf --style google --diff library/simple_module.py
-          pylint library/simple_module.py
-          yamllint --strict \
-            .github/workflows/ansible.yaml \
-            roles/simple/tasks/main.yaml \
-            *.yaml
+      - name: lint ansible playbooks
+        uses: ansible/ansible-lint-action@v6.0.1
