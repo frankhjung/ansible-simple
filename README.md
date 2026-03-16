@@ -38,3 +38,16 @@ To run module call:
 ansible-playbook site.yaml
 ```
 
+## Updating Outdated Packages
+
+To check for packages that have newer versions available, run:
+
+```bash
+pip list --outdated
+```
+
+If you want to update a specific package, use:
+
+```bash
+pip install --upgrade <package_name>
+```

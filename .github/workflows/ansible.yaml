@@ -1,5 +1,4 @@
 ---
-
 name: Ansible Simple Module
 
 on: [push, pull_request]
@@ -8,7 +7,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-
       - name: shallow checkout
         uses: actions/checkout@v2
         with:
@@ -16,9 +14,14 @@ jobs:
           fetch-depth: 1
 
       - name: lint ansible playbooks
-        uses: ansible/ansible-lint-action@v6.0.1
+        uses: ansible/ansible-lint@main
+        env:
+          ANSIBLE_LIBRARY: ./library
 
       - name: run playbook
-        uses: dawidd6/action-ansible-playbook@v2
+        uses: dawidd6/action-ansible-playbook@v9
+        env:
+          ANSIBLE_LIBRARY: ./library
         with:
           playbook: site.yaml
+          inventory: inventory.yaml
